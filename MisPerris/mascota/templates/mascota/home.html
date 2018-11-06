@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+{% load static %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" media="screen" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" media="screen" href="{% static 'css/dataTables.bootstrap.css' %}">
+	<link rel="stylesheet" media="screen" href="{% static 'css/dataTables.tableTools.css' %}">
+	<link rel="stylesheet" media="screen" href="{% static 'css/style.css' %}">
+
+	<title>Mascotas</title>
+
+	<!--  -->
+
+	<style>
+
+	</style>
+
+</head>
+
+<body>
+   <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">MASCOTAS </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://mongo-laravel.dev/home">Inicio</a></li>
+            </ul>
+        </div>
+    </div>
+    </nav>
+
+	<div class="container">
+<div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-4">
+       <div class="panel panel-default">
+            <div class="panel-heading">Formulario de mascotas</div>
+            <div class="panel-body">
+                {% if qid %}
+                    <form method="POST" action="{% url 'mascota:actualizar_mascota' %}" enctype="multipart/form-data" accept-charset="UTF-8" class="test-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">Nombre</label>
+                            <input required="required" class="form-control" placeholder="Nombre" name="nombre" type="text" value="{{ data.nombre }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Raza</label>    
+                            <input type="hidden" name="qid" value="{{ data.pk }}">
+                            <input required="required" class="form-control" value="{{ data.raza }}" placeholder="Raza" name="raza" type="text">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Descripción</label>    
+                            <input type="hidden" name="qid" value="{{ data.pk }}">
+                            <input required="required" class="form-control" value="{{ data.Descripcion }}" placeholder="Descripción" name="descripcion" type="text">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Estado</label>    
+                            <input type="hidden" name="qid" value="{{ data.pk }}">
+                            <input required="required" class="form-control" value="{{ data.Estado }}" placeholder="Disponible-Adoptado-Rescatado" name="estado" type="text">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Imagen</label>    
+                            <input class="form-control" name="image" type="file">
+                            <img src="{{ MEDIA_URL }}{{ data.image }}" style="width: 200px;">
+                        </div>
+                       
+                        
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="Actualizar Datos">
+                        </div>
+                    </form>
+                {% else %}
+                    <form method="POST" action="{% url 'mascota:guardar_mascota' %}" enctype="multipart/form-data" accept-charset="UTF-8" class="test-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">Nombre</label>
+                            <input required="required" class="form-control" placeholder="Nombre" name="nombre" type="text" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Raza</label>    
+                            <input required="required" class="form-control" value="" placeholder="Raza" name="raza" type="text">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Descripción</label>    
+                            <input required="required" class="form-control" value="" placeholder="Descripción" name="descripcion" type="text">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Estado</label>    
+                            <input required="required" class="form-control" value="" placeholder="Rescatado - Disponible - Adoptado" name="estado" type="text">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Imagen</label>    
+                            <input required="required" class="form-control" name="image" type="file">
+                        </div>
+                        
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="Guardar">
+                        </div>
+                    </form>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8 col-sm-8 col-xs-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Lista Mascota</div>
+            <div class="panel-body">
+                <table class="table table-striped table-bordered datatable" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nombre</th>
+                            <th>Raza</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Imagen</th>
+                            <!--<th>Action</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if latest_question_list %}
+                            {% for question in latest_question_list %}
+                                <tr>
+                                    <!-- instead $i++ in php -->
+                                    <td>{{ forloop.counter }}</td> 
+                                    <td>{{ question.nombre }}</td>
+                                    <td>{{ question.raza }}</td>
+                                    <td>{{ question.Descripción }}</td>
+                                    <td>{{ question.Estado }}</td>
+                                    <td><img src="{{ MEDIA_URL }}{{ question.image }}" style="width: 60px;"></td>
+                                    <!--<td>{{ question.pub_date }}</td>-->
+                                    <td>
+                                        <a href="{% url 'mascota:editar_mascota' question.id %}">Editar</a> | 
+                                        <a onclick="return confirm('Esta seguro que quiere eliminar ?');" href="{% url 'mascota:eliminar_mascota' question.id %}">Eliminar</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% elif getdata %}
+                            
+                            {% for question in getdata %}
+                                <tr>
+                                    
+                                    <td>{{ forloop.counter }}</td> 
+                                    <td>{{ question.nombre }}</td>
+                                    <td>{{ question.raza }}</td>
+                                    <td>{{ question.Descripción }}</td>
+                                    <td>{{ question.Estado }}</td>
+                                    <td><img src="{{ MEDIA_URL }}{{ question.image }}" style="width: 60px;"></td>
+                                    <!--<td>{{ question.pub_date }}</td>-->
+                                    <td>
+                                        <a href="{% url 'mascota:editar_mascota' question.id %}">Editar</a> | 
+                                        <a onclick="return confirm('Esta seguro que quiere eliminar ?');" href="{% url 'mascota:eliminar_mascota' question.id %}">Eliminar</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                                <tr>
+                                <td colspan="5">No hay data disponible ..</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+    
+</div>
+<footer class="footer">
+    <div class="container">
+        <p class="muted credit">MisPerris <a href="">Erick Morales</a></p>
+    </div>
+</footer>    
+    <script type="text/javascript" src="{% static 'js/jquery-2.1.3.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
